@@ -3,21 +3,11 @@
 	import CardList from "./components/listCard/listCard.svelte"
 	import Modal from "./components/modal/modal.svelte"
 	import firebase from "firebase/app";
+	import firebaseConfig from "./config/setting"
+	import {onMount} from "svelte"
     import 'firebase/firestore';
     import 'firebase/performance';
     import 'firebase/database';
-
-	const firebaseConfig = {
-		apiKey: "AIzaSyDdwIX2AxbX9O9Uq3I6N3npsPTlQK6gVPA",
-		authDomain: "greetilist.firebaseapp.com",
-		databaseURL: "https://greetilist-default-rtdb.firebaseio.com",
-		projectId: "greetilist",
-		storageBucket: "greetilist.appspot.com",
-		messagingSenderId: "676926515453",
-		appId: "1:676926515453:web:d1368fd9f9e7813016f694",
-		measurementId: "G-YDCNFYC4QH"
-	};
-	
 
 	let eventList = []
 	let isShowModal = true
@@ -28,6 +18,8 @@
 	let chooseCongratulation = []
 	let filters = []
 
+	firebase.initializeApp(firebaseConfig)
+
 	const unique = (arr) => {
 		let result = [];
 		for (let str of arr) {
@@ -37,10 +29,8 @@
 		}
 		return result;
 	}
-
-    firebase.initializeApp(firebaseConfig)
-
-	firebase.database().ref("Event").on("value", (snapshot) => {
+	onMount(() => {
+		firebase.database().ref("Event").on("value", (snapshot) => {
 		let list = []
 		let filterList = []
 		snapshot.forEach(eventBlocks => {
@@ -49,10 +39,12 @@
 				list = list.concat(Object.entries(e.val()))
 			})
 		})
-	  filters = unique(filterList)
-	  chooseCongratulation = congratulationsList =	list
-	  eventList = Object.keys(snapshot.val())
+		filters = unique(filterList)
+		chooseCongratulation = congratulationsList =	list
+		eventList = Object.keys(snapshot.val())
+		})
 	})
+	
 	
 	const changeVisibleModal = (chooseEvent) => {
 		isShowModal = false
