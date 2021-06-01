@@ -3,6 +3,14 @@
     export let chooseCongratulation = []
     $: message = `You have ${chooseCongratulation.length} cards`
     $: chooseCongratulation = chooseCongratulation
+    const clickcopie = (el) => {
+        navigator.clipboard.writeText(el.target.textContent).then(() => {
+            alert('text copied')
+        })
+        .catch(err => {
+            console.log('Something went wrong', err);
+        });
+    }
 </script>
 
 <style>
@@ -17,7 +25,7 @@
     <hr>
     <p>{message}</p>
     {#each chooseCongratulation as event}
-        <div class = "card">
+        <div on:click={clickcopie} class = "card">
             <Card bind:event/>
         </div>
     {/each}
